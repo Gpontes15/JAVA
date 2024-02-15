@@ -1,0 +1,269 @@
+https://replit.com/@GabrielPontes10/AV3POO#Funcionario.java
+
+//Main.java//
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
+
+class Main {
+
+  private static List<Funcionario> funcionarios = new ArrayList<>();
+
+  public static void main(String[] args) {
+
+        boolean executar = true;
+        while (executar) {
+
+            int opcao = Integer.parseInt(JOptionPane.showInputDialog(
+                    "Selecione a opção:\n1. Registrar funcionário\n2. Excluir funcionário\n3. Alterar salário de um funcionário\n4. Exibir lista de funcionários\n5. Registrar dependentes de um funcionário\n6. Mostrar salário de um funcionário com aumento por dependente\n7. Gerar arquivo de dados dos funcionários\n8. Sair\nEscolha uma opção:"));
+
+            switch (opcao) {
+                case 1:
+                    registrarFuncionario();
+                    break;
+                case 2:
+                    excluirFuncionario();
+                    break;
+                case 3:
+                    alterarSalarioFuncionario();
+                    break;
+                case 4:
+                    exibirFuncionarios();
+                    break;
+                case 5:
+                    registrarDependentes();
+                    break;
+                case 6:
+                    mostrarSalarioComAumento();
+                    break;
+                case 7:
+                    gerarArquivoDadosFuncionarios();
+                    break;
+                case 8:
+                    executar = false;
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(null, "Opção inválida. Por favor, tente novamente.");
+            }
+        }
+
+    }
+
+    private static void registrarFuncionario() {
+        String nome = JOptionPane.showInputDialog("Digite o nome do funcionário:");
+        String cargo = JOptionPane.showInputDialog("Digite o cargo do funcionário:");
+        double salario = Double.parseDouble(JOptionPane.showInputDialog("Digite o salário do funcionário:")); 
+
+        Funcionario funcionario = new Funcionario(nome, cargo, salario);
+        funcionarios.add(funcionario);
+
+        funcionario.calcularAumentoSalario();
+
+        JOptionPane.showMessageDialog(null, "Funcionário registrado com sucesso. Código do funcionário: " + funcionario.getCodigo());
+        //JOptionPane.showMessageDialog(null, "Salário atualizado com aumento: " + funcionario.getSalario());
+    }
+
+    private static void excluirFuncionario() {
+        int codigo = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do funcionário a ser excluído: ")); 
+
+        Funcionario funcionarioEncontrado = null;
+        for (Funcionario funcionario : funcionarios) {
+            if (funcionario.getCodigo() == codigo) {
+                funcionarioEncontrado = funcionario;
+                break;
+            }
+        }
+
+        if (funcionarioEncontrado != null) {
+            funcionarios.remove(funcionarioEncontrado);
+            JOptionPane.showMessageDialog(null, "Funcionário removido com sucesso.");
+            JOptionPane.showMessageDialog(null, "Dependentes do funcionário removido:");
+            for (String dependente : funcionarioEncontrado.getDependentes()) {
+                System.out.println(dependente);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Funcionário não encontrado.");
+        }
+    }
+
+    private static void alterarSalarioFuncionario() {
+        int codigo = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do funcionário: ")); 
+
+        Funcionario funcionarioEncontrado = null;
+        for (Funcionario funcionario : funcionarios) {
+            if (funcionario.getCodigo() == codigo) {
+                funcionarioEncontrado = funcionario;
+                break;
+            }
+        }
+
+        if (funcionarioEncontrado != null) {
+            double novoSalario = Double.parseDouble(JOptionPane.showInputDialog("Digite o novo salário do funcionário: ")); 
+
+            funcionarioEncontrado.setSalario(novoSalario);
+            funcionarioEncontrado.calcularAumentoSalario();
+            JOptionPane.showMessageDialog(null, "Salário do funcionário alterado com sucesso.");
+        } else {
+            JOptionPane.showMessageDialog(null, "Funcionário não encontrado.");
+        }
+    }
+
+    private static void exibirFuncionarios() {
+        JOptionPane.showMessageDialog(null, "------ Lista de Funcionários ------");
+        for (Funcionario funcionario : funcionarios) {
+            JOptionPane.showMessageDialog(null, "Código: " + funcionario.getCodigo() + "\n" + "Nome: " + funcionario.getNome() + "\n" + "Cargo: " + funcionario.getCargo() + "\n" + "Salário: " + funcionario.getSalario() + "\n" + "Dependentes: " + funcionario.getDependentes());
+        }
+    }
+
+    private static void registrarDependentes() {
+        int codigo = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do funcionário: "));
+
+        Funcionario funcionarioEncontrado = null;
+        for (Funcionario funcionario : funcionarios) {
+            if (funcionario.getCodigo() == codigo) {
+                funcionarioEncontrado = funcionario;
+                break;
+            }
+        }
+
+        if (funcionarioEncontrado != null) {
+            int numDependentes = Integer.parseInt(JOptionPane.showInputDialog("Digite o número de dependentes do funcionário: ")); 
+
+            for (int i = 1; i <= numDependentes; i++) {
+                String dependente = JOptionPane.showInputDialog("Digite o nome do dependente " + i + ": ");
+                funcionarioEncontrado.adicionarDependente(dependente);
+            }
+
+            funcionarioEncontrado.calcularAumentoSalario();
+
+            JOptionPane.showMessageDialog(null, "Dependente(s) registrado(s) com sucesso.");
+            JOptionPane.showMessageDialog(null, "Salário atualizado com aumento: " + funcionarioEncontrado.getSalario());
+        } else {
+            JOptionPane.showMessageDialog(null, "Funcionário não encontrado.");
+        }
+    }
+
+    private static void mostrarSalarioComAumento() {
+        int codigo = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do funcionário: ")); 
+
+        Funcionario funcionarioEncontrado = null;
+        for (Funcionario funcionario : funcionarios) {
+            if (funcionario.getCodigo() == codigo) {
+                funcionarioEncontrado = funcionario;
+                break;
+            }
+        }
+
+        if (funcionarioEncontrado != null) {
+            JOptionPane.showMessageDialog(null, "Salário do funcionário com aumento por dependente: " + funcionarioEncontrado.getSalario());
+        } else {
+            JOptionPane.showMessageDialog(null, "Funcionário não encontrado.");
+        }
+    }
+
+    private static void gerarArquivoDadosFuncionarios() {
+        String nomeArquivo = JOptionPane.showInputDialog("Digite o nome do arquivo: ");
+
+        try (PrintWriter writer = new PrintWriter(new FileWriter(nomeArquivo))) {
+            for (Funcionario funcionario : funcionarios) {
+                writer.println("Código: " + funcionario.getCodigo());
+                writer.println("Nome: " + funcionario.getNome());
+                writer.println("Cargo: " + funcionario.getCargo());
+                writer.println("Salário: " + funcionario.getSalario());
+                writer.println("Dependentes: " + funcionario.getDependentes());
+                writer.println("Bônus: " + funcionario.getDependentes().size() * 2 + "% (2% de aumento em seu salário por cada dependente)");
+                writer.println();
+            }
+            JOptionPane.showMessageDialog(null, "Arquivo de dados dos funcionários gerado com sucesso.");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao gerar o arquivo de dados dos funcionários: " + e.getMessage());
+        }
+  }
+}
+
+
+//Funcionario.java//
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
+
+public class Funcionario {
+
+    private static int contadorCod = 1;
+    private int codigo;
+    private String nome;
+    private String cargo;
+    private double salario;
+    private List<String> dependentes;
+
+    public Funcionario(String nome, String cargo, double salario) {
+        this.codigo = contadorCod++;
+        this.nome = nome;
+        this.cargo = cargo;
+        this.salario = salario;
+        this.dependentes = new ArrayList<>();
+    }
+
+    public int getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(int codigo) {
+        this.codigo = codigo;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getCargo() {
+        return cargo;
+    }
+
+    public void setCargo(String cargo) {
+        this.cargo = cargo;
+    }
+
+    public double getSalario() {
+        return salario;
+    }
+
+    public void setSalario(double salario) {
+        this.salario = salario;
+    }
+
+    public List<String> getDependentes() {
+        return dependentes;
+    }
+
+    public void setDependentes(List<String> dependentes) {
+        this.dependentes = dependentes;
+    }
+
+    public void adicionarDependente(String dependente) {
+        dependentes.add(dependente);
+    }
+
+    public void removerDependente(String dependente) {
+        dependentes.remove(dependente);
+    }
+
+    public void calcularAumentoSalario() {
+        double percentualAumento = dependentes.size() * 0.02;
+        double aumento = salario * percentualAumento;
+        salario = salario + aumento;
+    }
+
+}
